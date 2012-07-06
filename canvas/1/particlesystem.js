@@ -36,4 +36,41 @@ function ParticleSystem(){
 			particles[index] = particles[particles.length-1];
 		particles.pop();
 	}
+
+	function applyGravity(){
+		for(var i in particles)
+			particles[i].acceleration = that.graity;
+	}
+
+	function applyEffectors() {
+        for (var j in that.effectors) {
+            var apply = that.effectors[j].apply;
+            for (var i in particles)
+                apply(particles[i]);    
+        }
+    }
+
+	function kinematics(dt){
+		for(var i in particles){
+			var p = particles[i];
+			p.position = p.position.add(p.velocity.multiply(dt));
+			p.velocity = p.velocity.add(p.acceleration.multiply(dt));
+		}
+	}
+
+	this.render = function(ctx){
+		for(var i in particles){
+			var p = particles[i];
+			var alpha = 1 - p.age / p.life;
+			ctx.fillStyle = "rgba("
+				+ Math.floor(p.color.r*255) + ","
+				+ Math.floor(p.color.g*255) + ","
+				+ Math.floor(p.color.b*255) + ","
+				+ alpha.toFixed(2) + ")";
+			ctx.beginPath();
+			ctx.arc(p.position.x, p.position.y, p.size, 0, Math.PI*2, true);
+			ctx.closePath();
+			ctx.fill();
+		}
+	}
 }

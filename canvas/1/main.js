@@ -11,7 +11,7 @@ function start(canvasName, func){
 	var loop = function(){
 		func();
 		if(isContinue)
-			timeoutID = setTimeout(loop, 10);
+			timeoutID = setTimeout(loop, 20);
 	}
 
 
@@ -33,24 +33,31 @@ function clearCanvas(){
 ----------------------main----------------
 */
 
-var position = new Vector2(10, 200);
-var velocity = new Vector2(50, -50);
-var acceleration = new Vector2(0, 10);
-var dt = 0.1;
+var ps = new ParticleSystem();
+ps.effectors.push(new ChamberBox(0, 0, 400, 400));
+var dt = 0.01;
+var i = 0;
+
+function sampleDirection(angle1, angle2){
+	var t = Math.random();
+	var theta = angle1*t + angle2*(1-t);
+	return new Vector2(Math.cos(theta), Math.sin(theta));
+}
+
+function sampleColor(color1, color2){
+	var t = Math.random();
+	return color1.multiply(t).add(color2.multiply(1-t));
+}
 
 function step(){
-	position = position.add(velocity.multiply(dt));
-	velocity = velocity.add(acceleration.multiply(dt));
+	i++;
+	if(i%10 == 0)
+		ps.emit(new Particle(new Vector2(200,200), sampleDirection(Math.PI * 0, Math.PI * 2).multiply(250), 6*Math.random(), sampleColor(Color.white, Color.black), 20*Math.random())); 
+	ps.simulate(dt);
 
-	ctx.strokeStyle = "#000";
-	ctx.fillStyle = "#fff";
-	ctx.beginPath();
-	ctx.arc(position.x, position.y, 5, 0, Math.PI*2, true);
-	ctx.closePath();
-	ctx.fill();
-	ctx.stroke();
-
-	 
+	ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	ps.render(ctx);
 }
 
 start("mycanvas", step);
