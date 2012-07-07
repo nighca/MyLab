@@ -33,9 +33,11 @@ function clearCanvas() {
 
 var ps = new ParticleSystem();
 ps.particleEffectors.push(new ChamberBox(0, 0, 400, 400));
-ps.systemEffectors.push(new Combine());
+//ps.systemEffectors.push(new Combine());
 var dt = 0.01;
 var i = 0;
+
+var oldMousePosition = Vector2.zero, newMousePosition = new Vector2(200, 200);
 
 function sampleDirection(angle1, angle2) {
     var t = Math.random();
@@ -44,27 +46,31 @@ function sampleDirection(angle1, angle2) {
 }
 
 function sampleColor(color1, color2) {
-    var t = Math.random();
+    //var t = Math.random();
+    var t = 0.8;
     return color1.multiply(t).add(color2.multiply(1 - t));
 }
 
-function sampleSize(maxSize){
-	return maxSize * Math.random();
-}
-
-function sampleLife(maxLife){
-	return maxLife * Math.random();
+function sampleNumber(value1, value2) {
+    var t = Math.random();
+    return value1 * t + value2 * (1 - t);
 }
 
 function step() {
 	i++;
-	if(i%40 == 0)
+    var direction = newMousePosition.subtract(oldMousePosition).normalize().negate();
+
+	if(i%2 == 0)
     	ps.emit(
-    		new Particle(new Vector2(sampleSize(400), sampleSize(400)), 
-	    		sampleDirection(Math.PI * 0, Math.PI * 2).multiply(500), 
-	    		sampleLife(5), 
+    		new Particle(newMousePosition, //position
+	    		//sampleDirection(Math.PI * 0, Math.PI * 2).multiply(500), //velocity
+                direction.multiply(500),
+	    		sampleNumber(0, 3), //life
 	    		sampleColor(Color.white, Color.black), 
-	    		sampleSize(50)));
+	    		sampleNumber(0, 10))); //size
+
+    oldMousePosition = newMousePosition;
+
     ps.simulate(dt);
 
     ctx.fillStyle="rgba(0, 0, 0, 0.6)";
@@ -73,6 +79,15 @@ function step() {
 }
 
 start("mycanvas", step);
+
+canvas.onmousemove = function(e) {
+    if (e.layerX || e.layerX == 0) { // Firefox 
+        e.target.style.position='relative';
+        newMousePosition = new Vector2(e.layerX, e.layerY);
+    }
+    else
+        newMousePosition = new Vector2(e.offsetX, e.offsetY);
+};
 
 
 //step();
