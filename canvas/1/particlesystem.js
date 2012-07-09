@@ -7,7 +7,7 @@ function ParticleSystem() {
     var particles = new Array();
 
     // Public fields
-    this.gravity = new Vector2(0, 1000);
+    this.gravity = new Vector2(0, 10000);
     this.particleEffectors = new Array();
     this.systemEffectors = new Array();
 

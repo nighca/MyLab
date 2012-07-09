@@ -109,8 +109,8 @@ canvas.onmouseup = function(e){
         ps.emit(
             new Particle(newMousePosition, //position
                 //sampleDirection(Math.PI * 0, Math.PI * 2).multiply(500), //velocity
-                direction.multiply(20),
-                sampleNumber(0, 3), //life
+                direction.multiply(10),
+                3, //life
                 randomColor(Color.white, Color.black), 
                 sampleNumber(5, 20))); //size
     console.log(direction.x, direction.y);
