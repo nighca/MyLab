@@ -51,6 +51,17 @@ function sampleColor(color1, color2) {
     return color1.multiply(t).add(color2.multiply(1 - t));
 }
 
+function randomColor() {
+    var t1 = Math.random();
+    var t2 = Math.random();
+    var t3 = Math.random();
+    var t = t1 + t2 + t3;
+    t1 /= t;
+    t2 /= t;
+    t3 /= t;
+    return new Color(t1, t2, t3);
+}
+
 function sampleNumber(value1, value2) {
     var t = Math.random();
     return value1 * t + value2 * (1 - t);
@@ -58,6 +69,8 @@ function sampleNumber(value1, value2) {
 
 function step() {
 	i++;
+
+/*    
     var direction = newMousePosition.subtract(oldMousePosition).normalize().negate();
 
 	if(i%2 == 0)
@@ -66,15 +79,16 @@ function step() {
 	    		//sampleDirection(Math.PI * 0, Math.PI * 2).multiply(500), //velocity
                 direction.multiply(500),
 	    		sampleNumber(0, 3), //life
-	    		sampleColor(Color.white, Color.black), 
-	    		sampleNumber(0, 10))); //size
-
-    oldMousePosition = newMousePosition;
+	    		randomColor(Color.white, Color.black), 
+	    		sampleNumber(5, 20))); //size
+*/
+    
 
     ps.simulate(dt);
 
-    ctx.fillStyle="rgba(0, 0, 0, 0.6)";
+    ctx.fillStyle="rgba(0, 0, 0, 1)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
+ 
     ps.render(ctx);
 }
 
@@ -87,6 +101,23 @@ canvas.onmousemove = function(e) {
     }
     else
         newMousePosition = new Vector2(e.offsetX, e.offsetY);
+};
+
+canvas.onmouseup = function(e){
+    var direction = newMousePosition.subtract(oldMousePosition).negate();
+
+        ps.emit(
+            new Particle(newMousePosition, //position
+                //sampleDirection(Math.PI * 0, Math.PI * 2).multiply(500), //velocity
+                direction.multiply(20),
+                sampleNumber(0, 3), //life
+                randomColor(Color.white, Color.black), 
+                sampleNumber(5, 20))); //size
+    console.log(direction.x, direction.y);
+};
+
+canvas.onmousedown = function(e){
+    oldMousePosition = newMousePosition;
 };
 
 

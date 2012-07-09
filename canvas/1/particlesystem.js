@@ -7,7 +7,7 @@ function ParticleSystem() {
     var particles = new Array();
 
     // Public fields
-    this.gravity = new Vector2(0, 100);
+    this.gravity = new Vector2(0, 1000);
     this.particleEffectors = new Array();
     this.systemEffectors = new Array();
 
@@ -34,10 +34,23 @@ function ParticleSystem() {
                 + Math.floor(p.color.g * 255) + ","
                 + Math.floor(p.color.b * 255) + ","
                 + alpha.toFixed(2) + ")";
+            //console.log(alpha.toFixed(2));
+            
+            ctx.shadowOffSetX=6 * (p.position.x-200)/200; 
+            ctx.shadowOffsetY=-6 * (p.position.y-200)/200;  
+            //ctx.shadowColor="rgba(50,50,100,0.5)";  
+            ctx.shadowColor = "rgba("
+                + Math.floor(p.color.r * 255) + ","
+                + Math.floor(p.color.g * 255) + ","
+                + Math.floor(p.color.b * 255) + ","
+                + (alpha/2).toFixed(2) + ")";
+            ctx.shadowBlur=2.5;
+
             ctx.beginPath();
             ctx.arc(p.position.x, p.position.y, p.size, 0, Math.PI * 2, true);
             ctx.closePath();
-            ctx.fill();
+            ctx.fill(); 
+
         }
     }
 
